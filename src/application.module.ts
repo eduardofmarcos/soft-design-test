@@ -3,9 +3,15 @@ import { ApiModule } from './api/api.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { IamModule } from './iam/iam.module';
-
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ApiModule, MongooseModule.forRoot('mongodb://localhost:27017/soft_design_db'), UsersModule, IamModule],
+  imports: [
+    ConfigModule.forRoot({ envFilePath: './.env' }),
+    ApiModule,
+    MongooseModule.forRoot('mongodb://localhost:27017/soft_design_db'),
+    UsersModule,
+    IamModule,
+  ],
 })
 export class AppplicationModule {}
