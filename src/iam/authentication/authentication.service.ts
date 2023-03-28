@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { Inject } from '@nestjs/common';
+import { ActiveUserData } from '../interfaces/active-user-data.interface';
 
 @Injectable()
 export class AuthenticationService {
@@ -27,7 +28,7 @@ export class AuthenticationService {
   async signUp(signupDto: SignUpDto) {
     try {
       await this.isUserRegistred(signupDto.email);
-
+      console.log(signupDto)
       const user = new this.userModel();
       user.email = signupDto.email;
       user.password = await this.hashingService.hash(signupDto.password);
@@ -57,7 +58,7 @@ export class AuthenticationService {
       {
         sub: user._id,
         email: user.email,
-      },
+      } as ActiveUserData,
       {
         audience: this.jwtConfiguration.audience,
         issuer: this.jwtConfiguration.issuer,
