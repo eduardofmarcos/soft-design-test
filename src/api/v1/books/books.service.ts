@@ -28,7 +28,7 @@ export class BooksService {
       .findOne({
         _id: id,
       })
-      .exec();
+      
 
     if (!book)
       throw new NotFoundException(`Book with this ${id} was not found.`);
