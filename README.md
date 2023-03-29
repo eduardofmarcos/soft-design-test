@@ -1,73 +1,63 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Aplicação para vaga de desenvolvedor NodeJs.
+
+## Considerações Gerais
+
+Foi efetuado tudo que foi solicitado pelos requisitos do teste.
+  -> Observação 1: para os testes unitarios, que realizei apenas o do model "Books" (pois preciso entregar hoje o teste, pois não estarei na cidade amanhã)
+  -> Observação 2: não foi implementado um tratamento de erros e exceções de forma solida, pois me faltou um pouco de tempo e tambem acredito nao ser tanto o escopo do teste.
 
 ## Installation
 
-```bash
-$ npm install
-```
+  * Com docker rodando no host, para setar o DB digitar no folder com o arquivo docker-compose.yml:
+		
+    docker-compose up -d
 
-## Running the app
+	* Para iniciar a aplicação modo dev:
 
-```bash
-# development
-$ npm run start
+		npm run start:dev
 
-# watch mode
-$ npm run start:dev
+	* Para iniciar os testes unitarios:
 
-# production mode
-$ npm run start:prod
-```
+		npm run test -- book
+	
+  * Foi retirado o .env do gitIgnore para facilitar o teste de voces, por isso o arquivo se 			encontra no repositorio remoto.
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
+## Aplicação estruturada em tres modulos principais:
 
-# e2e tests
-$ npm run test:e2e
+  * modulo de autenticação (path: /authentication/sign-in e /authentication/sign-up)
+    * Bearer token (colar no campo Authorizarion no header e Bearer + TOKEN gerado para rota /sign-in)
+    * Unicas rotas liberadas da aplicação. O restante segue conforme abaixo:
 
-# test coverage
-$ npm run test:cov
-```
+  * modulo de API (path: /api/v1/books)
+    * para integrações com apps de terceiros;
+    * acesso total ao CRUD de livros, inclusive alterar para disponivel “isAvailable”, para uma devolução de livro por exemplo;
+    * Acesso apenas por role de ADMIN;
+      * Criado apenas perfis estaticos de ADMIN, para login como ADMIN 				e ter acesso total a API, utilizar esse password:
+			5C9771CCEBE2350F1FE623C2D8A0F7BC80FAE6A36AC909D6CAE3A97A
 
-## Support
+  * modulo de APP (path: /books)
+    * rotas de listagem de livros;
+    * rotas para listar um unico livro (por id);
+    * rota para alugar livro por id (no caso apenas um patch  alterando o campo available para false;
+    * Liberado para usuarios de perfil REGULAR
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+## Estrutura de pesquisa nas rotas listagem
+  * Feita por QueryParams
+  * Pode ser utilizado qualquer campo da entidade book para a pesquisa conforme abaixo:
+    * _id , title, author, publisher, lengthInPages, publishedIn, topic, format, isAvailable
+    * 'page', 'fields', 'limit', 'sort', palavras reservadas da query para paginação, limit, etc
+    * exemplo:
+      * http://localhost:3000/api/v1/books?lengthInPages=250 (busca livros com 250)
+      * http://localhost:3000/api/v1/books?topic=drama (busca livros com topics que contem drama)
+      * http://localhost:3000/api/v1/books?limit=1 (retorna um resultado)
+      * possivel combinações ex.: ?limit=2&format=pdf
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
+## Qualquer duvida à disposição.
 
-Nest is [MIT licensed](LICENSE).
+# Obrigado pela oportunidade!
