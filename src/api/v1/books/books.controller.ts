@@ -17,16 +17,17 @@ import { AuthType } from 'src/iam/authentication/enums/auth-types.enum';
 import { ActiveUser } from 'src/iam/decorators/active-user.decorator';
 import { Role } from 'src/users/enums/role.enum';
 import { Roles } from 'src/iam/authorization/roles.decorator';
+import { QueryFilter } from 'src/common/dto/query.dto-ts/query.dto';
 
 @Auth(AuthType.Bearer)
 @Roles(Role.Admin)
 @Controller('api/v1/books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
-  
+
   @Get()
-  findAll(@Query() paginationQuery:PaginationQuery) {
-    return this.booksService.findAll(paginationQuery);
+  findAll(@Query() query: QueryFilter) {
+    return this.booksService.findAll(query);
   }
 
   @Get(':id')

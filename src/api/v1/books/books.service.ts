@@ -4,15 +4,23 @@ import { Book } from './entities/book.entity';
 import { Model } from 'mongoose';
 import { CreateBookDto } from './dto/create-book.dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto/update-book.dto';
-import { PaginationQuery } from 'src/common/dto/pagination-query/pagination-query.dto';
+import { QueryFilter } from 'src/common/dto/query.dto-ts/query.dto';
+import { APIfeatures } from 'src/common/query';
 
 @Injectable()
 export class BooksService {
   @InjectModel(Book.name) private readonly bookModel: Model<Book>;
 
-  findAll(paginationQuery: PaginationQuery) {
-    const { limit, offset } = paginationQuery;
-    return this.bookModel.find().skip(offset).limit(limit).exec();
+  async findAll(query: QueryFilter) {
+    let filter = {};
+
+    const features = new APIfeatures(this.bookModel.find(filter), query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    return await features.query;
   }
 
   async findOne(id: string) {
