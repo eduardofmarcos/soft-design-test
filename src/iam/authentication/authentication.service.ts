@@ -14,13 +14,14 @@ import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { Inject } from '@nestjs/common';
 import { ActiveUserData } from '../interfaces/active-user-data.interface';
+import { Role } from 'src/users/enums/role.enum';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly hashingService: HashingService,
-    private readonly jwtService:JwtService,
+    private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
@@ -28,9 +29,12 @@ export class AuthenticationService {
   async signUp(signupDto: SignUpDto) {
     try {
       await this.isUserRegistred(signupDto.email);
-      console.log(signupDto)
       const user = new this.userModel();
       user.email = signupDto.email;
+      user.role =
+        signupDto.password === process.env.ADMIN_KEY
+          ? Role.Admin
+          : Role.Regular;
       user.password = await this.hashingService.hash(signupDto.password);
       await user.save();
     } catch (err) {
@@ -58,6 +62,7 @@ export class AuthenticationService {
       {
         sub: user._id,
         email: user.email,
+        role: user.role,
       } as ActiveUserData,
       {
         audience: this.jwtConfiguration.audience,
@@ -68,8 +73,8 @@ export class AuthenticationService {
     );
 
     return {
-        accessToken
-    }
+      accessToken,
+    };
   }
 
   async isUserRegistred(email: string) {

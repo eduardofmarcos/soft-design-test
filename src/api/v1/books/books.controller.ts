@@ -15,12 +15,15 @@ import { PaginationQuery } from 'src/common/dto/pagination-query/pagination-quer
 import { Auth } from 'src/iam/authentication/decorators/auth.decorators';
 import { AuthType } from 'src/iam/authentication/enums/auth-types.enum';
 import { ActiveUser } from 'src/iam/decorators/active-user.decorator';
+import { Role } from 'src/users/enums/role.enum';
+import { Roles } from 'src/iam/authorization/roles.decorator';
 
 @Auth(AuthType.Bearer)
+@Roles(Role.Admin)
 @Controller('api/v1/books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
-
+  
   @Get()
   findAll(@Query() paginationQuery:PaginationQuery) {
     return this.booksService.findAll(paginationQuery);
