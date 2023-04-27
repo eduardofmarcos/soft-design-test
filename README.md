@@ -1,7 +1,4 @@
 
-## Description
-
-Teste para empresa SoftDesign - ta liberado pra quem quiser tomar como base - nao passei e como levei alguns dias pra fazer e nem feedback tive resolvi deixar aqui publico mesmo. a conhecimento efetuei todos os items então sei la o que pediam...
 
 ## Considerações Gerais
 
